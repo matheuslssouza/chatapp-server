@@ -6,5 +6,6 @@ public class Main {
         //create a websocket
     Server server = new Server(4000);
         //connect with database
+        server.startServer();
     }
 }
