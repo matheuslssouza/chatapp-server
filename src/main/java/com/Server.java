@@ -1,6 +1,7 @@
 package com;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 public class Server {
 
@@ -22,9 +23,23 @@ public class Server {
 
             //Conditional for verify if the server is closed
             while(!serverSocket.isClosed()) {
+
                 //If not closed, accept the connection for the socket
-                serverSocket.accept();
+                Socket clientSocket = serverSocket.accept();
+
+                // Create Thread for every connection
+                ClientHandler clientHandler = new ClientHandler(clientSocket);
+                Thread thread = new Thread(clientHandler);
+                thread.start();
+
                 System.out.println("Client Connected");
+
+                // Get information about the connection
+                InetAddress clientInetAddress = clientSocket.getInetAddress();
+                System.out.println("Client IP Address: " + clientInetAddress.getHostAddress() + ":" + this.port);
+
+
+
             }
 
         } catch (Exception e) {
