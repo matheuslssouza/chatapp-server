@@ -19,7 +19,7 @@ public class Server {
 
             this.serverSocket = new ServerSocket(port);
             InetAddress inetAddress = serverSocket.getInetAddress();
-            System.out.println("Ip address: " + inetAddress.getHostAddress() + ":" + this.port);
+            System.out.println("Server Listening on Ip address: " + inetAddress.getHostAddress() + ":" + this.port);
 
             //Conditional for verify if the server is closed
             while(!serverSocket.isClosed()) {
@@ -27,19 +27,16 @@ public class Server {
                 //If not closed, accept the connection for the socket
                 Socket clientSocket = serverSocket.accept();
 
-                // Create Thread for every connection
-                ClientHandler clientHandler = new ClientHandler(clientSocket);
-                Thread thread = new Thread(clientHandler);
-                thread.start();
-
                 System.out.println("Client Connected");
 
                 // Get information about the connection
                 InetAddress clientInetAddress = clientSocket.getInetAddress();
                 System.out.println("Client IP Address: " + clientInetAddress.getHostAddress() + ":" + this.port);
 
-
-
+                // Create Thread for every connection
+                ClientHandler clientHandler = new ClientHandler(clientSocket);
+                Thread thread = new Thread(clientHandler);
+                thread.start();
             }
 
         } catch (Exception e) {
