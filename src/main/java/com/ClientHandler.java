@@ -1,35 +1,43 @@
 package com;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 
 public class ClientHandler implements Runnable {
     private Socket clientSocket;
+    private BufferedReader bufferedReader;
+    private PrintWriter printWriter;
+    private String clientName;
 
     ClientHandler(Socket clientSocket) {
-        this.clientSocket = clientSocket;
+        try {
+            this.clientSocket = clientSocket;
+            // To open an input stream associate with client socket for read the data send by clients.
+            this.bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+            // We use PrintWriter to simplify the process for send data without put the measure of bytes.
+            this.printWriter= new PrintWriter(clientSocket.getOutputStream(), true);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void run() {
+        printWriter.println("Welcome to the Server! Type: 'exit' to quit");
 
-        try {
-            InputStream input = clientSocket.getInputStream();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            OutputStream output = clientSocket.getOutputStream();
-            PrintWriter writer = new PrintWriter(output, true);
-            writer.println("Welcome to Server!");
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+        String clientMessage;
+
+        while (true) {
+            try {
+                clientMessage = bufferedReader.readLine();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
         }
 
-        System.out.println("Message sent to client.");
     }
 }
+
